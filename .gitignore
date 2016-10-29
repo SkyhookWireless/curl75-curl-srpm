@@ -1,0 +1,6 @@
+*.rpm
+*.tar.*
+*~
+epel-*
+git-*[0-9]
+rpbmuild
