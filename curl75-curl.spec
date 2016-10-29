@@ -1,3 +1,12 @@
+# Provide alternative location for updated curl,
+# based on Paul Howarth's city-fan version
+# Reset prefix for alternative location
+%global _baseprefix /opt/curl75
+%global _prefix %{_baseprefix}/root/usr
+%global _datadir %{_prefix}/share
+%global _docdir %{_datadir}/doc
+%global _mandir %{_datadir}/man
+
 # Detect the distribution in use
 %global __despace head -n 1 | tr -d '[:space:]' | sed -e 's/[(].*[)]//g'
 %global __lower4 cut -c 1-4 | tr '[:upper:]' '[:lower:]'
@@ -47,19 +56,20 @@ Version:	7.50.3
 Release:	2.0.cf.%{__distinit}%{__distvers}
 %if %{compat}
 Summary:	Curl library for compatibility with old applications
-Name:		libcurl%(echo %{version} | tr -d .)
+Name:           curl75-libcurl%(echo %{version} | tr -d .)
 Group:		System Environment/Libraries
-Obsoletes:	compat-libcurl < %{version}-%{release}
-Provides:	compat-libcurl = %{version}-%{release}
+Obsoletes:	curl75-compat-libcurl < %{version}-%{release}
+Provides:	curl75-compat-libcurl = %{version}-%{release}
 %else
 Summary:	Utility for getting files from remote servers (FTP, HTTP, and others)
-Name:		curl
+Name:		curl75-curl
 Group:		Applications/Internet
 Provides:	webclient
 %endif
 License:	MIT
 Source0:	http://curl.haxx.se/download/curl-%{version}.tar.bz2
 Source100:	curlbuild.h
+Source200:	curl75.enable
 
 # Patch making libcurl multilib ready
 Patch101:	0101-curl-7.41.1-multilib.patch
@@ -143,7 +153,8 @@ uploading, HTTP form based upload, proxies, cookies, user+password
 authentication (Basic, Digest, NTLM, Negotiate, kerberos...), file transfer
 resume, proxy tunneling and a busload of other useful tricks.
 
-%package -n libcurl
+#%package -n libcurl
+%package -n curl75-libcurl
 Summary:	A library for getting files from web servers
 Group:		System Environment/Libraries
 # libssh2 adds symbols that curl uses if available, so we need to enforce
@@ -161,7 +172,7 @@ Requires:	nss-pem
 %endif
 %endif
 
-%description -n libcurl
+%description -n curl75-libcurl
 libcurl is a free and easy-to-use client-side URL transfer library, supporting
 FTP, FTPS, HTTP, HTTPS, SCP, SFTP, TFTP, TELNET, DICT, LDAP, LDAPS, FILE, IMAP,
 SMTP, POP3 and RTSP. libcurl supports SSL certificates, HTTP POST, HTTP PUT,
@@ -169,7 +180,7 @@ FTP uploading, HTTP form based upload, proxies, cookies, user+password
 authentication (Basic, Digest, NTLM, Negotiate, Kerberos4), file transfer
 resume, HTTP proxy tunneling and more.
 
-%package -n libcurl-devel
+%package -n curl75-libcurl-devel
 Group:		Development/Libraries
 Requires:	libcurl%{?_isa} = %{version}-%{release}
 Requires:	%{ssl_provider}-devel %{ssl_versionreq}
@@ -187,7 +198,7 @@ Requires:	%{_datadir}/aclocal
 Requires:	pkgconfig
 %endif
 
-%description -n libcurl-devel
+%description -n curl75-libcurl-devel
 The libcurl-devel package includes header files and libraries necessary for
 developing programs that use the libcurl library. It contains the API
 documentation of the library, too.
@@ -300,6 +311,9 @@ mv %{buildroot}%{_includedir}/curl/curlbuild{,-32}.h
 install -p -m 644 %{SOURCE100} %{buildroot}%{_includedir}/curl
 %endif
 
+# Activate enable wrapper
+install -m755 %{SOURCE200} %{buildroot}%{_baseprefix}/enable
+
 %check
 # Skip the (lengthy) checks on EOL Fedora releases (over ~400 days old)
 # Also run on Fedora 12, have seen test failures on F12..F15
@@ -317,14 +331,17 @@ fi
 rm -rf %{buildroot}
 
 %if ! %{compat}
-%post -n libcurl -p /sbin/ldconfig
-%postun -n libcurl -p /sbin/ldconfig
+%post -n curl75-libcurl -p /sbin/ldconfig
+#%postun -n libcurl -p /sbin/ldconfig
+%postun -n curl75-libcurl -p /sbin/ldconfig
 %else
 %post -p /sbin/ldconfig
 %postun -p /sbin/ldconfig
 %endif
 
 %files
+%{_baseprefix}/enable
+
 %doc CHANGES README*
 %doc docs/BUGS docs/FAQ docs/FEATURES docs/SECURITY.md docs/TODO
 %doc docs/MANUAL docs/RESOURCES docs/TheArtOfHttpScripting
@@ -345,7 +362,7 @@ rm -rf %{buildroot}
 %endif
 
 %if ! %{compat}
-%files -n libcurl
+%files -n curl75-libcurl
 %if 0%{?_licensedir:1}
 %license COPYING
 %else
@@ -353,7 +370,7 @@ rm -rf %{buildroot}
 %endif
 %{_libdir}/libcurl.so.*
 
-%files -n libcurl-devel
+%files -n curl75-libcurl-devel
 %doc docs/examples/*.c docs/examples/Makefile.example docs/INTERNALS.md
 %doc docs/CHECKSRC.md docs/CONTRIBUTE.md docs/libcurl/ABI docs/CODE_STYLE.md
 %{_bindir}/curl-config

@@ -1,0 +1,5 @@
+export PATH=/opt/curl75/root/usr/bin${PATH:+:${PATH}}
+export LD_LIBRARY_PATH=/opt/curl75/root/usr/lib64${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
+export PYTHONPATH=/opt/curl75/root/usr/lib/python2.6/site-packages${PYTHONPATH:+:${PYTHONPATH}}
+export MANPATH=/opt/curl75/root/usr/share/man:$MANPATH
+. scl_source enable v8314

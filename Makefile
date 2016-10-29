@@ -14,7 +14,7 @@ RSYNCSAFEOPTS=$(RSYNCOPTS) --ignore-existing
 #MOCKS+=epel-6-i386
 #MOCKS+=epel-5-i386
 MOCKS+=epel-6-x86_64
-MOCKS+=epel-5-x86_64
+#MOCKS+=epel-5-x86_64
 
 SPEC = `ls *.spec`
 
