@@ -6,6 +6,7 @@
 %global _datadir %{_prefix}/share
 %global _docdir %{_datadir}/doc
 %global _mandir %{_datadir}/man
+%global _usrsrc %{_baseprefix}/src
 
 # Detect the distribution in use
 %global __despace head -n 1 | tr -d '[:space:]' | sed -e 's/[(].*[)]//g'
@@ -392,6 +393,9 @@ rm -rf %{buildroot}
 %exclude %{_libdir}/libcurl.la
 
 %changelog
+* Sat Oct 10 2016 Nico Kadel-Garcia <nkadel@skyhook.com> -  7.50.3-02.0.cf
+- Reset deployment target to /opt/curl75 for parallel deployment
+
 * Fri Oct  7 2016 Paul Howarth <paul@city-fan.org> - 7.50.3-2.0.cf
 - Use the just-built version of libcurl while generating zsh completion
 
