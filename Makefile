@@ -23,7 +23,7 @@ TARBALL := curl-$(VERSION).tar.bz2
 # Local yum compatible RPM repository
 REPOBASEDIR="`/bin/pwd | xargs dirname`/rt4repo"
 
-all:: $(MOCKS)
+all:: tarball $(MOCKS)
 
 .PHONY: tarball
 tarball: $(TARBALL)
