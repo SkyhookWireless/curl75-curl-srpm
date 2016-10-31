@@ -30,7 +30,7 @@ tarball: $(TARBALL)
 $(TARBALL):
 	wget --no-clobber http://curl.haxx.se/download/curl-$(VERSION).tar.bz2
 
-srpm:: FORCE
+srpm:: FORCE $(TARBALL)
 	@echo Building *.spec SRPM
 	rm -rf rpmbuild
 	rpmbuild \
@@ -43,7 +43,7 @@ build:: srpm FORCE
 		--define "_topdir $(PWD)/rpmbuild" \
 		--rebuild rpmbuild/SRPMS/*.src.rpm
 
-$(MOCKS):: FORCE
+$(MOCKS):: FORCE $(TARBALL)
 	@if [ -n "`find $@ -name \*.rpm ! -name \*.src.rpm 2>/dev/null`" ]; then \
 		echo "	Skipping $(SPEC) in $@ with RPMS"; \
 	else \
