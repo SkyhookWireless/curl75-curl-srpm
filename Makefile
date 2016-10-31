@@ -16,12 +16,19 @@ RSYNCSAFEOPTS=$(RSYNCOPTS) --ignore-existing
 MOCKS+=epel-6-x86_64
 #MOCKS+=epel-5-x86_64
 
-SPEC = `ls *.spec`
+SPEC := `ls *.spec`
+VERSION := 7.50.3
+TARBALL := curl-$(VERSION).tar.bz2
 
 # Local yum compatible RPM repository
 REPOBASEDIR="`/bin/pwd | xargs dirname`/rt4repo"
 
 all:: $(MOCKS)
+
+.PHONY: tarball
+tarball: $(TARBALL)
+$(TARBALL):
+	wget --no-clobber http://curl.haxx.se/download/curl-$(VERSION).tar.bz2
 
 srpm:: FORCE
 	@echo Building *.spec SRPM
@@ -65,5 +72,6 @@ clean::
 
 realclean distclean:: clean
 	rm -f *.src.rpm
+	rm -f $(TARBALL)
 
 FORCE:
